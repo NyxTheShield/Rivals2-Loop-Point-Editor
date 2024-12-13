@@ -80,7 +80,7 @@ public class MainScript : MonoBehaviour
         try
         {
             int loopStartValue = (int)float.Parse(loopStartInput.text)*48000;
-            int loopEndValue = (int)float.Parse(loopStartInput.text)*48000;
+            int loopEndValue = (int)float.Parse(loopEndInput.text)*48000;
             PatchIntValue(songData[songDropdown.value].loopStartOffset1, loopStartValue);
             PatchIntValue(songData[songDropdown.value].loopStartOffset2, loopStartValue);
             PatchIntValue(songData[songDropdown.value].loopStartOffset3, loopStartValue);

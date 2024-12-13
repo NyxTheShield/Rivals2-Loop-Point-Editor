@@ -70,3 +70,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Rivals2MusicPatcher/.idea
+Rivals2MusicPatcher/Library
+Rivals2MusicPatcher/Temp
+Rivals2MusicPatcher/obj
