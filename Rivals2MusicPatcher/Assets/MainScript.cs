@@ -50,6 +50,7 @@ public class MainScript : MonoBehaviour
 
     public void SelectPath()
     {
+        print("Clicked on Path");
         var returnArray = StandaloneFileBrowser.OpenFilePanel("Select Music.bank", "", "bank", false);
         if (returnArray.Length <= 0)
         {
@@ -87,7 +88,21 @@ public class MainScript : MonoBehaviour
             PatchIntValue(songData[songDropdown.value].loopEndOffset1, loopEndValue);
             PatchIntValue(songData[songDropdown.value].loopEndOffset2, loopEndValue);
 
-            CreateMessage("Patched Sucessfully", Color.green);
+            int decideLoop = songData[songDropdown.value].loopStartOffset2 - songData[songDropdown.value].loopStartOffset1;
+            if (decideLoop == 28)
+            {
+                PatchIntValue(songData[songDropdown.value].loopStartOffset1+4, loopEndValue);
+                CreateMessage("Patched Sucessfully (Code 28)", Color.green);
+            }
+            else if (decideLoop == 20)
+            {
+                CreateMessage("Patched Sucessfully (Code 20)", Color.green);
+                PatchIntValue(songData[songDropdown.value].loopStartOffset2+4, loopEndValue);
+            }
+
+            
+
+            
         }
         catch (Exception e)
         {
@@ -116,6 +131,7 @@ public class MainScript : MonoBehaviour
     public void OnPathChanged()
     {
         songSelectView.SetActive(true);
+        
     }
 
     [Button("Read Data")]
@@ -139,6 +155,13 @@ public class MainScript : MonoBehaviour
             auxData.loopEndOffset2 =Int32.Parse(separated[7]);
             songData.Add(auxData);
         }
+    }
+
+    public int debugListIndex;
+    [Button("Check Points")]
+    public void CheckNewPoints()
+    {
+        songData[debugListIndex].PrintData();
     }
     
     public static void PatchIntValue(int offset, int value)
@@ -192,6 +215,38 @@ public class MainScript : MonoBehaviour
             PatchIntValue(loopStartOffset3, loopStart);
             PatchIntValue(loopEndOffset1, loopEnd);
             PatchIntValue(loopEndOffset2, loopEnd);
+            
+            PatchIntValue(loopStartOffset1+4, loopEnd);
+        }
+
+        public void PrintData()
+        {
+            MainScript.path = PlayerPrefs.GetString("BankPath");
+            var content = File.ReadAllBytes(MainScript.path);
+            var start = BitConverter.ToInt32(ReadAtOffset(content, loopStartOffset1, 4));
+            var end = BitConverter.ToInt32(ReadAtOffset(content, loopEndOffset1, 4));
+            var length = BitConverter.ToInt32(ReadAtOffset(content, loopStartOffset1 + 4, 4));
+            var length2 = BitConverter.ToInt32(ReadAtOffset(content, loopStartOffset2 + 4, 4));
+            print(songName);
+            print($"Loop Start: {start/48000f}");
+            //print($"Loop Start: {start}");
+            print($"Loop End: {end/48000f}");
+            //print($"Loop End: {end}");
+           
+            
+            int decideLoop = loopStartOffset2 - loopStartOffset1;
+            if (decideLoop == 28)
+            {
+                print($"Loop Length 1: {length/48000f}");
+                //print($"Loop Length 1: {length2}");
+            }
+            else if (decideLoop == 20)
+            {
+                print($"Loop Length 2: {length2/48000f}");
+                //print($"Loop Length 2: {length2}");
+            }
+            
+            
         }
     }
 
